@@ -30,11 +30,7 @@ def spider_zhihu():
             for image in imageList:
                 find_item = image.get('data-actualsrc')
                 if find_item:
-                    temp = find_item
-                    for index in range(1, 5):
-                        temp = temp.replace('https://pic%d.zhimg.com/'%index, '')
-                    temp =  temp.replace('_b', '_r')
-                    result.append(temp)
+                    result.append(find_item)
         return jsonify(stat=1, imageList=result)
     else:
         abort(400)

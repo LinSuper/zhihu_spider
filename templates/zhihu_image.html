@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>知乎看图</title>
         <link rel="stylesheet" href="/static/css/uikit.gradient.css">
-        <script src="/static/js/jquery.js"></script>
+        <script src="../static/js/jquery.js"></script>
         <script src="/static/js/uikit.js"></script>
         <link id="data-uikit-theme" rel="stylesheet" href="/static/css/uikit.docs.min.css">
     </head>
@@ -23,15 +23,16 @@
   </nav>
 
 <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
-  <!-- <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt="">
-  <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt="">
-  <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt="">
-  <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt="">
-  <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt="">
-  <img class="uk-thumbnail" src="../img/zhihu/4d89e7335c72c5077ba0c1d6b83393c5_r.png" width="215" height="100" alt=""> -->
+
 </div>
 </body>
 <script>
+function showImg(url) {
+  var frameid = 'frameimg' + Math.random();
+  window.tmpHTML = '<link id="data-uikit-theme" rel="stylesheet" href="/static/css/uikit.docs.min.css"><img id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+\'px\'; }<'+'/script>';
+  tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.tmpHTML;" frameBorder="0" scrolling="no" width="100%"></iframe>');
+  $("#imageList").append(tmpIFrame);
+  }
   function search(){
     var url= $('#url').val();
     $.get("/api/zhihu_spider?url=" + url,
@@ -43,9 +44,10 @@
               alert("找到"+imageList.length+"张图片");
               for (var i = 0; i < imageList.length; i++) {
                 var image = imageList[i];
-                imageBox.append(
-                  '<img class="uk-thumbnail" src="../img/zhihu/'+image+'" width="215" height="100" alt="">'
-                );
+                showImg(image);
+                // imageBox.append(
+                //   '<img class="uk-thumbnail" src="../img/zhihu/'+image+'" width="215" height="100" alt="">'
+                // );
               }
             }
             });
