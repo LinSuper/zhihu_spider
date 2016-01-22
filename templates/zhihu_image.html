@@ -4,53 +4,67 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>知乎看图</title>
-        <link rel="stylesheet" href="/static/css/uikit.gradient.css">
+        <link rel="stylesheet" href="../static/css/uikit.gradient.css">
         <script src="../static/js/jquery.js"></script>
-        <script src="/static/js/uikit.js"></script>
-        <link id="data-uikit-theme" rel="stylesheet" href="/static/css/uikit.docs.min.css">
+        <script src="../static/js/uikit.js"></script>
+        <link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css">
     </head>
 <body>
-<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-  <nav class="tm-navbar uk-navbar uk-navbar-attached">
+      <nav class="tm-navbar uk-navbar uk-navbar-attached">
 
-      <ul class="uk-navbar-nav">
-        <a class="uk-navbar-brand" href="/">知乎看图</a>
-              <div class="uk-form uk-navbar-content uk-display-inline-block">
-                <input type="text" placeholder="Search" id="url">
-                <button class="uk-button uk-button-primary" onclick="search()">Get!</button>
-              </div>
-      </ul>
-  </nav>
-
-<div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
-
-</div>
+          <ul class="uk-navbar-nav">
+            <a class="uk-navbar-brand" href="/">知乎看图</a>
+                  <div class="uk-form uk-navbar-content uk-display-inline-block">
+                    <input type="text" placeholder="Search" id="url">
+                    <button class="uk-button uk-button-primary" onclick="search()">Get!</button>
+                  </div>
+          </ul>
+      </nav>
+    <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+        <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;">
+        <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
+        </div>
+    </div>
 </body>
 <script>
+var i = 0;
 function showImg(url) {
-  var frameid = 'frameimg' + Math.random();
-  window.tmpHTML = '<link id="data-uikit-theme" rel="stylesheet" href="/static/css/uikit.docs.min.css"><img id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+\'px\'; }<'+'/script>';
-  tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.tmpHTML;" frameBorder="0" scrolling="no" width="100%"></iframe>');
-  $("#imageList").append(tmpIFrame);
+      var frameid = 'frameimg' + (i++);
+      window[frameid] = '<link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css"><img style="width:100%;" id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+10+\'px\'; }<'+'/script>';
+      tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.' + frameid +';" frameBorder="0" scrolling="no" width="100%"></iframe>');
+      $("#imageList").append(tmpIFrame);
   }
   function search(){
     var url= $('#url').val();
-    $.get("/api/zhihu_spider?url=" + url,
-        function(data,status){
-            if(status=="success"){
-              var imageBox = $('#imageList');
-              imageBox.empty();
-              var imageList = data.imageList;
-              alert("找到"+imageList.length+"张图片");
-              for (var i = 0; i < imageList.length; i++) {
-                var image = imageList[i];
-                showImg(image);
-                // imageBox.append(
-                //   '<img class="uk-thumbnail" src="../img/zhihu/'+image+'" width="215" height="100" alt="">'
-                // );
-              }
-            }
-            });
+    $.ajax({
+        url:"/api/zhihu_spider?url=" + url,
+        type: "GET",
+        success: function(data){
+                  $("#processBar").hide();
+                  var imageBox = $('#imageList');
+                  imageBox.empty();
+                  var imageList = data.imageList;
+                  alert("找到"+imageList.length+"张图片");
+                  for (var i = 0; i < imageList.length; i++) {
+                    var image = imageList[i];
+                    showImg(image);
+                    // imageBox.append(
+                    //   '<img class="uk-thumbnail" src="../img/zhihu/'+image+'" width="215" height="100" alt="">'
+                    // );
+                  }
+            },
+        error: function(XMLHttpRequest, textStatus, errorThrown)
+        {
+            $("#processBar").hide();
+            alert('访问网络失败，请重试！' + errorThrown);
+        }
+    });
+    var imageBox = $('#imageList');
+    imageBox.empty();
+    $("#processBar").show();
   }
+  $(document).ready(function(){
+    $("#processBar").hide();
+  })
 </script>
 </html>

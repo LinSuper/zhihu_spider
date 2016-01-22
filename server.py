@@ -19,6 +19,6 @@ def hello_world():
 from werkzeug.serving import run_with_reloader
 @run_with_reloader
 def run_server():
-    http_server = WSGIServer(('0.0.0.0', 9999), app)
+    http_server = WSGIServer(('0.0.0.0', 9999), app, 2**24)
     http_server.serve_forever()
 #app.run('0.0.0.0',port=9999)
