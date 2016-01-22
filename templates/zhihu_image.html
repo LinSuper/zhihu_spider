@@ -56,7 +56,7 @@ function showImg(url) {
         error: function(XMLHttpRequest, textStatus, errorThrown)
         {
             $("#processBar").hide();
-            alert('访问网络失败，请重试！' + errorThrown);
+            alert('链接格式有误或者服务器忙，请重试！' + errorThrown);
         }
     });
     var imageBox = $('#imageList');
