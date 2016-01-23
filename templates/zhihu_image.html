@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../static/css/uikit.gradient.css">
         <script src="../static/js/jquery.js"></script>
         <script src="../static/js/uikit.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
         <link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css">
     </head>
 <body>
@@ -21,7 +22,7 @@
           </ul>
       </nav>
     <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-        <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;">
+        <!-- <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;"> -->
         <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
         </div>
     </div>
@@ -40,7 +41,7 @@ function showImg(url) {
         url:"/api/zhihu_spider?url=" + url,
         type: "GET",
         success: function(data){
-                  $("#processBar").hide();
+                  // $("#processBar").hide();
                   var imageBox = $('#imageList');
                   imageBox.empty();
                   var imageList = data.imageList;
@@ -55,16 +56,16 @@ function showImg(url) {
             },
         error: function(XMLHttpRequest, textStatus, errorThrown)
         {
-            $("#processBar").hide();
+            // $("#processBar").hide();
             alert('链接格式有误或者服务器忙，请重试！' + errorThrown);
         }
     });
     var imageBox = $('#imageList');
     imageBox.empty();
-    $("#processBar").show();
+    UIkit.notify("搜索中，请耐心等候",{timeout:4000});
   }
-  $(document).ready(function(){
-    $("#processBar").hide();
-  })
+  // $(document).ready(function(){
+  //   $("#processBar").hide();
+  // })
 </script>
 </html>
