@@ -22,6 +22,12 @@
           </ul>
       </nav>
     <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+      <div id="hot_box">
+      <h3 style="text-align:center">热门搜索</h3>
+      <ul class="uk-list uk-list-line" id="hot_items">
+
+      </ul>
+      </div>
         <!-- <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;"> -->
         <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
         </div>
@@ -29,6 +35,27 @@
 </body>
 <script>
 var i = 0;
+function showHotSearch(){
+  var hot_items = $('#hot_items');
+  $.ajax({
+    url: "/api/hot_search",
+    type: "GET",
+    success: function(data){
+      var items = data.result;
+      for (var i = 0; i < items.length; i++){
+        var strHtml = '<a href="javascript:void(0)" onclick="clickSearch(' + "'"+ items[i].url + "')"+'"'+">" + items[i].title + "</a>";
+
+        var newLi = $("<li></li>").append(strHtml);
+        hot_items.append(newLi);
+      }
+    }
+  });
+
+}
+function clickSearch(url){
+  $('#url').val(url);
+  search();
+}
 function showImg(url) {
       var frameid = 'frameimg' + (i++);
       window[frameid] = '<link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css"><img style="width:100%;" id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+10+\'px\'; }<'+'/script>';
@@ -64,8 +91,8 @@ function showImg(url) {
     imageBox.empty();
     UIkit.notify("搜索中，请耐心等候",{timeout:4000});
   }
-  // $(document).ready(function(){
-  //   $("#processBar").hide();
-  // })
+  $(document).ready(function(){
+    showHotSearch();
+  })
 </script>
 </html>

@@ -57,3 +57,23 @@ def spider_zhihu():
         return jsonify(stat=1, imageList=result)
     else:
         abort(400)
+
+
+@api.route('/hot_search', methods=['GET'])
+def get_hot_search():
+    start =  request.args.get('start', 0, type=int)
+    end = request.args.get('end', 0, type=int)
+    hot_items = SearchRecord.col.find().sort(
+        SearchRecord.Field.searchCount, -1
+    ).skip(start).limit(end - start)
+    if hot_items.count() == 0:
+        return jsonify(stat=1,result=[])
+    else:
+        result = []
+        for i in hot_items:
+            result.append({
+                'url': i['url'],
+                'title': i['title'],
+                'count': i['searchCount']
+            })
+        return jsonify(stat=1,result=result)
