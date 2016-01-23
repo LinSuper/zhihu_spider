@@ -62,7 +62,7 @@ def spider_zhihu():
 @api.route('/hot_search', methods=['GET'])
 def get_hot_search():
     start =  request.args.get('start', 0, type=int)
-    end = request.args.get('end', 0, type=int)
+    end = request.args.get('end', 15, type=int)
     hot_items = SearchRecord.col.find().sort(
         SearchRecord.Field.searchCount, -1
     ).skip(start).limit(end - start)

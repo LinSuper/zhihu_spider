@@ -22,14 +22,13 @@
           </ul>
       </nav>
     <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-      <div id="hot_box">
-      <h3 style="text-align:center">热门搜索</h3>
-      <ul class="uk-list uk-list-line" id="hot_items">
-
-      </ul>
-      </div>
         <!-- <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;"> -->
         <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
+        </div>
+        <div id="hot_box">
+        <h3 style="text-align:center">热门搜索</h3>
+        <ul class="uk-list uk-list-line" id="hot_items">
+        </ul>
         </div>
     </div>
 </body>
@@ -89,7 +88,7 @@ function showImg(url) {
     });
     var imageBox = $('#imageList');
     imageBox.empty();
-    UIkit.notify("搜索中，请耐心等候",{timeout:4000});
+    UIkit.notify("搜索中，请耐心等候",{timeout:2000});
   }
   $(document).ready(function(){
     showHotSearch();
