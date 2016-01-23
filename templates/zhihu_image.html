@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>知乎看图</title>
-        <link rel="stylesheet" href="../static/css/uikit.gradient.css">
-        <script src="../static/js/jquery.js"></script>
-        <script src="../static/js/uikit.js"></script>
+        <link rel="stylesheet" href="../static/src/css/uikit.gradient.css">
+        <script src="../static/src/js/jquery.js"></script>
+        <script src="../static/src/js/uikit.js"></script>
         <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
-        <link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css">
+        <link id="data-uikit-theme" rel="stylesheet" href="../static/src/css/uikit.docs.min.css">
     </head>
 <body>
       <nav class="tm-navbar uk-navbar uk-navbar-attached">
@@ -28,24 +28,62 @@
         <div id="hot_box">
         <h3 style="text-align:center">热门搜索</h3>
         <ul class="uk-list uk-list-line" id="hot_items">
+
         </ul>
+        <div class="uk-pagination-previous" id="previous">
+          <a href="javascript:void(0)" onclick="previous_hot()">
+            <i class="uk-icon-angle-double-left">上一页</i>
+          </a>
+        </div>
+        <div class="uk-pagination-next" id="next">
+          <a href="javascript:void(0)" onclick="next_hot()">
+            <i class="uk-icon-angle-double-right">下一页</i>
+          </a>
+        </div>
         </div>
     </div>
 </body>
 <script>
 var i = 0;
+current_start = 0;
+hot_max = 0
+function previous_hot(){
+  current_start -= 10;
+  showHotSearch();
+}
+function next_hot(){
+  current_start += 10;
+  showHotSearch();
+}
 function showHotSearch(){
   var hot_items = $('#hot_items');
+  hot_items.empty();
   $.ajax({
-    url: "/api/hot_search",
+    url: "/api/hot_search?start="+current_start+"&end="+(current_start+10),
     type: "GET",
     success: function(data){
       var items = data.result;
+      hot_max = data.count;
+      //hot_items.append('<br>')
+      //hot_items.append('<div class="uk-pagination-previous"><i class="uk-icon-angle-double-left">下一页</i></div>');
       for (var i = 0; i < items.length; i++){
         var strHtml = '<a href="javascript:void(0)" onclick="clickSearch(' + "'"+ items[i].url + "')"+'"'+">" + items[i].title + "</a>";
 
         var newLi = $("<li></li>").append(strHtml);
         hot_items.append(newLi);
+      }
+      //hot_items.append('<div class="uk-pagination-previous"><i class="uk-icon-angle-double-right">下一页</i></div>');
+      if(current_start==0){
+        $('#previous').hide();
+      }
+      else {
+        $('#previous').show();
+      }
+      if(current_start>=hot_max-10){
+        $('#next').hide();
+      }
+      else {
+        $('#next').show();
       }
     }
   });

@@ -66,7 +66,8 @@ def get_hot_search():
     hot_items = SearchRecord.col.find().sort(
         SearchRecord.Field.searchCount, -1
     ).skip(start).limit(end - start)
-    if hot_items.count() == 0:
+    count = hot_items.count()
+    if count == 0:
         return jsonify(stat=1,result=[])
     else:
         result = []
@@ -76,4 +77,4 @@ def get_hot_search():
                 'title': i['title'],
                 'count': i['searchCount']
             })
-        return jsonify(stat=1,result=result)
+        return jsonify(stat=1, result=result, count=count)
