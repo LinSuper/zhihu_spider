@@ -41,7 +41,7 @@ def spider_zhihu():
                     'url': url
                 })
             else:
-                SearchRecord.col.update_one({
+                SearchRecord.col.update({
                     SearchRecord.Field.url:url},
                     {'$inc':{SearchRecord.Field.searchCount:1}
                 })
