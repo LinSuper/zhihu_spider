@@ -21,6 +21,7 @@
                   <div class="uk-form uk-navbar-content uk-display-inline-block">
                     <input type="text" placeholder="Search" id="url">
                     <button class="uk-button uk-button-primary" onclick="search()">Get!</button>
+                    <a href="#my_dialog" data-uk-modal>留言</a>
                   </div>
           </ul>
       </nav>
@@ -45,11 +46,48 @@
         </div>
         </div>
     </div>
+    <div id="my_dialog" class="uk-modal">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <a class="uk-modal-close uk-close"></a>
+        <div class="uk-modal-header">
+          <p>
+            如果对本网站有什么建议或者有系统出错，可以在这里反馈给我。最近还在实习，没什么时间写，等过几天放假我会加上一些好玩的功能～
+          </p>
+        </div>
+        <div class="uk-margin-small-top uk-modal-content uk-form">
+          <p><textarea type="text" class="uk-width-1-1" id="content"></textarea></p>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <button class="uk-button uk-button-primary" onclick="send_feedback()">提交</button>
+        </div>
+
+    </div>
+    </div>
 </body>
 <script>
 var i = 0;
 current_start = 0;
 hot_max = 0
+function send_feedback(){
+  var content = $('#content').val();
+  if(content.length<1){
+    alert("你好歹写点东西吧～");
+    return;
+  }
+  var data = {
+    "content": content
+  };
+  $.ajax({
+      url:"/api/send_feedback",
+      type: "POST",
+      data: data,
+      success: function(data){
+          var modal = UIkit.modal("#my_dialog");
+          modal.hide();
+          alert("发送成功！");
+      }
+    });
+}
 function previous_hot(){
   current_start -= 10;
   showHotSearch();

@@ -6,3 +6,4 @@ api = Blueprint('/api', __name__)
 
 
 from . import zhihu
+from . import admin
