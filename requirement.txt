@@ -1,4 +1,4 @@
 flask
-pymongo
+pymongo==2.8
 gevent
 BeautifulSoup

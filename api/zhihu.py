@@ -34,7 +34,7 @@ def spider_zhihu():
             })
             if find_record is None:
                 title = soup.find('title').text
-                SearchRecord.col.insert_one({
+                SearchRecord.col.insert({
                     '_id': str(ObjectId()),
                     'title': title,
                     'searchCount': 1,
