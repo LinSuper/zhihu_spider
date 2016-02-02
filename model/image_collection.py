@@ -9,4 +9,4 @@ class ImageCollection(object):
     class Field(object):
         _id = '_id'
         url = 'url'
-        imagesList = 'imagesList	'
+        imagesList = 'imagesList'

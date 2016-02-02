@@ -8,10 +8,10 @@ from flask.ext.login import (
     current_user
 )
 from bson import ObjectId
-import json
 import requests
 from BeautifulSoup import BeautifulSoup
 from model.search_record import SearchRecord
+from model.image_collection import ImageCollection
 
 
 @api.route('/zhihu_spider', methods=['GET'])
@@ -26,34 +26,43 @@ def spider_zhihu():
             url = 'https://' + url[index:]
         else:
             abort(400)
-        r = requests.get(url, headers=header)
-        soup=BeautifulSoup(r.content)
-        if r.status_code == 200:
-            find_record = SearchRecord.col.find_one({
-                SearchRecord.Field.url: url
+        find_img_col = ImageCollection.col.find_one({'url': url})
+        if find_img_col:
+            result = find_img_col[ImageCollection.Field.imagesList]
+        else:
+            r = requests.get(url, headers=header)
+            soup=BeautifulSoup(r.content)
+            if r.status_code == 200:
+                find_record = SearchRecord.col.find_one({
+                    SearchRecord.Field.url: url
+                })
+                if find_record is None:
+                    title = soup.find('title').text
+                    SearchRecord.col.insert({
+                        '_id': str(ObjectId()),
+                        'title': title,
+                        'searchCount': 1,
+                        'url': url
+                    })
+                else:
+                    SearchRecord.col.update({
+                        SearchRecord.Field.url:url},
+                        {'$inc':{SearchRecord.Field.searchCount:1}
+                    })
+            soup.findAll('div', {'class':'zm-editable-content clearfix'})
+            div_items=soup.findAll('div', {'class':'zm-editable-content clearfix'})
+            result = []
+            for i in div_items:
+                imageList = i.findAll('img')
+                for image in imageList:
+                    find_item = image.get('data-actualsrc')
+                    if find_item:
+                        result.append(find_item)
+            ImageCollection.col.insert({
+                '_id': str(ObjectId()),
+                ImageCollection.Field.url: url,
+                ImageCollection.Field.imagesList: result
             })
-            if find_record is None:
-                title = soup.find('title').text
-                SearchRecord.col.insert({
-                    '_id': str(ObjectId()),
-                    'title': title,
-                    'searchCount': 1,
-                    'url': url
-                })
-            else:
-                SearchRecord.col.update({
-                    SearchRecord.Field.url:url},
-                    {'$inc':{SearchRecord.Field.searchCount:1}
-                })
-        soup.findAll('div', {'class':'zm-editable-content clearfix'})
-        div_items=soup.findAll('div', {'class':'zm-editable-content clearfix'})
-        result = []
-        for i in div_items:
-            imageList = i.findAll('img')
-            for image in imageList:
-                find_item = image.get('data-actualsrc')
-                if find_item:
-                    result.append(find_item)
         return jsonify(stat=1, imageList=result)
     else:
         abort(400)

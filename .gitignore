@@ -1,3 +1,4 @@
 *.pyc
 *.py~
 config/__init__.py
+.idea/
