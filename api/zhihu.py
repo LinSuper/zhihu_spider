@@ -17,6 +17,8 @@ from model.image_collection import ImageCollection
 @api.route('/zhihu_spider', methods=['GET'])
 def spider_zhihu():
     url = request.args.get('url', None)
+    start = request.args.get('start', 0, type=int)
+    end = request.args.get('end', 20, type=int)
     header = {'Referer':url,'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
     'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Host':'www.zhihu.com'
     }
@@ -49,7 +51,6 @@ def spider_zhihu():
                         SearchRecord.Field.url:url},
                         {'$inc':{SearchRecord.Field.searchCount:1}
                     })
-            soup.findAll('div', {'class':'zm-editable-content clearfix'})
             div_items=soup.findAll('div', {'class':'zm-editable-content clearfix'})
             result = []
             for i in div_items:
@@ -63,7 +64,9 @@ def spider_zhihu():
                 ImageCollection.Field.url: url,
                 ImageCollection.Field.imagesList: result
             })
-        return jsonify(stat=1, imageList=result)
+        return_result = result[start:end]
+        count = len(result)
+        return jsonify(stat=1, imageList=return_result, count=count)
     else:
         abort(400)
 

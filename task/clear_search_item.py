@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+# 这个脚本是为了清理一些无效的搜索提交链接
 from model.search_record import SearchRecord
 from bson import ObjectId
 import re

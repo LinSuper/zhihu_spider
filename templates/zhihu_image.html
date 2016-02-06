@@ -4,13 +4,14 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="baidu-site-verification" content="ztcXRZmYtN" />
-        <meta name="keywords" content="知乎看图" />
+        <meta name="keywords" content="知乎 看图 福利" />
         <meta name="description" content="一个查看知乎问题回答图片的网站">
         <title>知乎看图</title>
         <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.gradient.css">
         <script src="http://files-10015041.file.myqcloud.com/static/src/js/jquery.js"></script>
         <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
         <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/pagination.js"></script>
         <link id="data-uikit-theme" rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.docs.min.css">
     </head>
 <body>
@@ -28,7 +29,9 @@
     <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
         <!-- <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;"> -->
         <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
+
         </div>
+          <!-- <ul class="uk-pagination" id="page"></ul> -->
         <div id="hot_box">
         <h3 style="text-align:center">热门搜索</h3>
         <ul class="uk-list uk-list-line" id="hot_items">
@@ -140,35 +143,57 @@ function showImg(url) {
       tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.' + frameid +';" frameBorder="0" scrolling="no" width="100%"></iframe>');
       $("#imageList").append(tmpIFrame);
   }
+function select_page(pageIndex){
+  var url= $('#url').val();
+  var start = (pageIndex - 1) * 20;
+  var end = pageIndex * 20;
+  $.ajax({
+      url:'/api/zhihu_spider?url=' + url + '&start=' + start + '&end=' +  end,
+      type: "GET",
+      success: function(data){
+                var imageBox = $('#imageList');
+                imageBox.empty();
+                var imageList = data.imageList;
+                for (var i = 0; i < imageList.length; i++) {
+                  var image = imageList[i];
+                  showImg(image);
+                }
+          },
+      error: function(XMLHttpRequest, textStatus, errorThrown)
+      {
+          alert('服务器忙，请重试！' + errorThrown);
+      }
+  });
+  UIkit.notify("加载中，请耐心等候",{timeout:1000});
+}
   function search(){
     var url= $('#url').val();
     $.ajax({
         url:"/api/zhihu_spider?url=" + url,
         type: "GET",
         success: function(data){
-                  // $("#processBar").hide();
                   var imageBox = $('#imageList');
                   imageBox.empty();
                   var imageList = data.imageList;
-                  alert("找到"+imageList.length+"张图片");
+                  alert("找到"+ data.count +"张图片");
                   for (var i = 0; i < imageList.length; i++) {
                     var image = imageList[i];
                     showImg(image);
-                    // imageBox.append(
-                    //   '<img class="uk-thumbnail" src="../img/zhihu/'+image+'" width="215" height="100" alt="">'
-                    // );
                   }
+                  imageBox.append('<ul class="uk-pagination" id="page"></ul>');
+                  $('#page').on('select.uk.pagination', function(e, pageIndex){
+                      select_page(pageIndex + 1);
+                  });
+                  var pagination = UIkit.pagination($('#page'), {items:data.count, itemsOnPage:20});
             },
         error: function(XMLHttpRequest, textStatus, errorThrown)
         {
-            // $("#processBar").hide();
             alert('链接格式有误或者服务器忙，请重试！' + errorThrown);
         }
     });
-    var imageBox = $('#imageList');
-    imageBox.empty();
     UIkit.notify("搜索中，请耐心等候",{timeout:2000});
   }
+
   $(document).ready(function(){
     showHotSearch();
   })

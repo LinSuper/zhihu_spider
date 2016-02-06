@@ -2,3 +2,5 @@
 *.py~
 config/__init__.py
 .idea/
+cookies
+verify.gif
