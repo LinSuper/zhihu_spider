@@ -48,6 +48,20 @@
           </a>
         </div>
         </div>
+        <div align="center">
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <!-- old -->
+          <ins class="adsbygoogle"
+               style="display:inline-block;width:336px;height:280px"
+               data-ad-client="ca-pub-5673866312642362"
+               data-ad-slot="8536906131"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+        <div align="center">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257489177'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1257489177' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
     </div>
     <div id="my_dialog" class="uk-modal">
       <div class="uk-modal-dialog uk-modal-dialog-large">
@@ -151,6 +165,7 @@ function select_page(pageIndex){
       url:'/api/zhihu_spider?url=' + url + '&start=' + start + '&end=' +  end,
       type: "GET",
       success: function(data){
+                var page = $('#page');
                 var imageBox = $('#imageList');
                 imageBox.empty();
                 var imageList = data.imageList;
@@ -158,6 +173,11 @@ function select_page(pageIndex){
                   var image = imageList[i];
                   showImg(image);
                 }
+                imageBox.append(page);
+                $('#page').on('select.uk.pagination', function(e, pageIndex){
+                    select_page(pageIndex + 1);
+                });
+                var pagination = UIkit.pagination($('#page'), {items:data.count, itemsOnPage:20,currentPage:pageIndex-1});
           },
       error: function(XMLHttpRequest, textStatus, errorThrown)
       {
@@ -193,9 +213,10 @@ function select_page(pageIndex){
     });
     UIkit.notify("搜索中，请耐心等候",{timeout:2000});
   }
-
   $(document).ready(function(){
     showHotSearch();
+
   })
+
 </script>
 </html>

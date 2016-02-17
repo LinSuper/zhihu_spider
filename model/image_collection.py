@@ -9,4 +9,5 @@ class ImageCollection(object):
     class Field(object):
         _id = '_id'
         url = 'url'
+        update = 'update'
         imagesList = 'imagesList'

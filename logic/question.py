@@ -3,6 +3,7 @@
 import requests, cookielib, json, re
 from BeautifulSoup import BeautifulSoup
 from auth import islogin
+from time import sleep
 
 
 requests=requests.Session()
@@ -44,14 +45,21 @@ def get_more_question(url):
     all_question_html = ''
     index = 1
     while True:
+        sleep(1)
         params={'url_token': url_token,'pagesize': 20, 'offset': 20 * index}
         data['params']=json.dumps(params)
-        r=requests.post('https://www.zhihu.com/node/QuestionAnswerListV2',data=data)
-        all_items = r.json()['msg']
+        try:
+            r=requests.post('https://www.zhihu.com/node/QuestionAnswerListV2',data=data)
+            all_items = r.json()['msg']
+        except Exception, e:
+            print r.content, e
+            index += 1
+            continue
         if len(all_items) == 0:
             break
         all_question_html += ''.join(all_items)
         index += 1
+        print index
     if len(all_question_html) == 0:
         return []
     soup = BeautifulSoup(all_question_html)
