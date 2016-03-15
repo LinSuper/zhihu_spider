@@ -3,8 +3,8 @@ from . import db
 from pymongo.collection import Collection
 
 
-class ImageCollection(object):
-    COL_NAME = 'ImageCollection'
+class ZhihuImage(object):
+    COL_NAME = 'ZhihuImage'
     col = Collection(db, COL_NAME)
     class Field(object):
         _id = '_id'
@@ -12,11 +12,6 @@ class ImageCollection(object):
         update = 'update'
         imagesList = 'imagesList'
         zhihu_type = 'zhihu_type'
-        origin = 'origin'
     class ZhihuTypeField(object):
-        collection  = 0
-        question  = 1
-    class OriginField:
-        zhihu = 0
-        douban = 1
-        other = 2
+        collection  = 1
+        question  = 0

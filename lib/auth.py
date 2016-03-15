@@ -10,7 +10,7 @@ import requests, termcolor
 
 
 requests = requests.Session()
-requests.cookies = cookielib.LWPCookieJar('cookies')
+requests.cookies = cookielib.LWPCookieJar('lib/cookies')
 try:
     requests.cookies.load(ignore_discard=True)
 except:
@@ -179,7 +179,7 @@ def islogin():
         return None
 
 
-def read_account_from_config_file(config_file="config.ini"):
+def read_account_from_config_file(config_file="lib/config.ini"):
     # NOTE: The ConfigParser module has been renamed to configparser in Python 3.
     #       The 2to3 tool will automatically adapt imports when converting your sources to Python 3.
     #       https://docs.python.org/2/library/configparser.html

@@ -1,13 +1,17 @@
 # coding:utf-8
 
-import requests, cookielib, json, re
-from BeautifulSoup import BeautifulSoup
-from auth import islogin
+import cookielib
+import json
+import re
 from time import sleep
 
+import requests
+from BeautifulSoup import BeautifulSoup
+
+from lib.auth import islogin
 
 requests=requests.Session()
-requests.cookies=cookielib.LWPCookieJar('cookies')
+requests.cookies=cookielib.LWPCookieJar('lib/cookies')
 requests.cookies.load(ignore_discard=True)
 
 

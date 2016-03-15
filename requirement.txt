@@ -2,3 +2,7 @@ flask
 pymongo==2.8
 gevent
 BeautifulSoup
+requests
+beautifulsoup4
+html2text
+termcolor
