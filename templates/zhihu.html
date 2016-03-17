@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block script_file %}
      <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
-    <script>
-     function ini_image(url, selector){
-        var frameid = 'frameimg' + 1;
-      window[frameid] = '<link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css"><img style="width:100%;" id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+10+\'px\'; }<'+'/script>';
-      tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.' + frameid +';" frameBorder="0" scrolling="no" width="100%"></iframe>');
-      selector.append(tmpIFrame);
-    }
-    </script>
 {% endblock %}
 {% block mid_content %}
     <div class="uk-width-medium-1-1" xmlns="http://www.w3.org/1999/html">
@@ -35,10 +27,8 @@
                         <div class="uk-grid" data-uk-grid-margin>
                         {% for j in i.image %}
                             {% set index_2 = loop.index %}
-                        <div class="uk-width-medium-1-5" id="question_{{ index_1 }}_{{ index_2 }}">
-                            <script>
-                                ini_image('{{ j }}',$("#question_{{ index_1 }}_{{ index_2 }}"));
-                            </script>
+                        <div class="uk-width-medium-1-5">
+                            <img src="{{ j }}">
                         </div>
                         {% endfor %}
                         </div>
@@ -88,9 +78,7 @@
                                 );
                                 var image_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
                                 for(var z=0;z<c_data.image.length;z++){
-                                    var script_text = '<script>'+'ini_image('+"'"+c_data.image[z]+"'"+',$("#question_'+(current_num+j)+'_'+ z+'"));'+'<\/script>'
-                                    var next_div = $('<div class="uk-width-medium-1-5"></div>').attr('id','question_'+(current_num+j)+'_'+z);
-                                    next_div.append(script_text);
+                                    var next_div = $('<div class="uk-width-medium-1-5"></div>').append($('<img src="'+c_data.image[z]+'">').attr('width',250).attr('height',100));
                                     image_div.append(next_div);
                                 }
                                 $('#question').append(title_div);

@@ -37,7 +37,9 @@ def show_zhihu():
                 image = j['image']
                 get_image += image
                 if len(get_image) >= 5:
-                    temp['image'] = get_image[:5]
+                    break
+            image_list = ['http://ali.superlin.cc:9999/img/zhihu?url='+i for i in get_image[:5]]
+            temp['image'] = image_list
             question_data.append(temp)
     return render_template('zhihu.html', index=2, question_data=question_data)
 
@@ -69,6 +71,12 @@ def get_more():
                     get_image += image
                     if len(get_image) >= 5:
                         break
-                temp['image'] = get_image[:5]
+                image_list = ['http://ali.superlin.cc:9999/img/zhihu?url='+i for i in get_image[:5]]
+                temp['image'] = image_list
                 question_data.append(temp)
         return jsonify(stat=1, data=question_data)
+
+
+@index.route('/question/<q_id>', methods=['GET'])
+def question_page(q_id):
+    pass
