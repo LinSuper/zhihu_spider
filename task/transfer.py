@@ -18,9 +18,18 @@ def update_task():
         sleep(1)
         test_1 = i
         question_url = test_1[ImageCollection.Field.url]
+        for n in xrange(5):
+            try:
+                find_item = ZhihuImage.col.find_one({'url': question_url})
+                break
+            except Exception,e:
+                continue
+        if find_item:
+            print "pass"
+            continue
         question = Question(question_url)
         data = []
-        ans = question.get_all_answers()
+        ans = question.get_top_i_answers(600)
         for i in ans:
             try:
                 temp = {}
@@ -37,20 +46,19 @@ def update_task():
                 print e
                 continue
         url = question.url
-        for n in xrange(5):
+        print "insert"
+        print data
+        for n in range(5):
             try:
-                find_item = ZhihuImage.col.find_one({'url': url})
+                ZhihuImage.col.insert({
+                    '_id': str(ObjectId()),
+                    ZhihuImage.Field.url: url,
+                    ZhihuImage.Field.zhihu_type: 1,
+                    ZhihuImage.Field.imagesList: data
+                })
                 break
             except Exception,e:
+                print e
                 continue
-        print "insert"
-        if find_item is None:
-            print data
-            ZhihuImage.col.insert({
-                '_id': str(ObjectId()),
-                ZhihuImage.Field.url: url,
-                ZhihuImage.Field.zhihu_type: 1,
-                ZhihuImage.Field.imagesList: data
-            })
 
 

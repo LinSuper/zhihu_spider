@@ -12,6 +12,11 @@ class ZhihuImage(object):
         update = 'update'
         imagesList = 'imagesList'
         zhihu_type = 'zhihu_type'
+    class ImagesListField(object):
+        answer_url = 'answer_url'
+        author = 'author'
+        author_url = 'author_url'
+        image = 'image'
     class ZhihuTypeField(object):
         collection  = 1
         question  = 0

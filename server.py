@@ -4,11 +4,13 @@ monkey.patch_all()
 from gevent.wsgi import WSGIServer
 from api import api
 from image import img
+from index import index
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'dsafdggfivfngnkrhsgsas'
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(img, url_prefix='/img')
+app.register_blueprint(index, url_prefix='/index')
 
 
 @app.route('/')
