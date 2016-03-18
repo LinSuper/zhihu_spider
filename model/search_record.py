@@ -11,3 +11,4 @@ class SearchRecord(object):
         url = 'url'
         searchCount = 'searchCount'
         title = 'title'
+        zhihu_type = 'zhihu_type'

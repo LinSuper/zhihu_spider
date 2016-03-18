@@ -16,7 +16,8 @@ app.register_blueprint(index, url_prefix='/index')
 @app.route('/')
 #@login_required
 def hello_world():
-    return render_template('zhihu_image.html')
+    # return render_template('zhihu_image.html')
+    return redirect('/index/zhihu')
 
 from werkzeug.serving import run_with_reloader
 @run_with_reloader

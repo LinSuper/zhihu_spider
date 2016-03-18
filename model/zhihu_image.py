@@ -18,5 +18,5 @@ class ZhihuImage(object):
         author_url = 'author_url'
         image = 'image'
     class ZhihuTypeField(object):
-        collection  = 1
-        question  = 0
+        collection  = 0
+        question  = 1

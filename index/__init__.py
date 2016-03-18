@@ -6,3 +6,4 @@ index = Blueprint('/index', __name__)
 
 
 import zhihu
+import home
