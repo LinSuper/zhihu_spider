@@ -103,11 +103,12 @@ def update_collection(url):
 
 
 def update_all():
-    all_items = list(SearchRecord.col.find().sort(
-        SearchRecord.Field.searchCount, -1
+    all_items = list(SearchRecord.col.find({'zhihu_type':{'$exists':False}}).sort(
+        SearchRecord.Field.searchCount
     ))
     for i in all_items:
         url = i['url']
+        print url
         if re.compile(r"(http|https)://www.zhihu.com/question/\d{8}").match(url):
             SearchRecord.col.update({'url':url},{
                 '$set': {'zhihu_type': 1}

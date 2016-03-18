@@ -36,9 +36,9 @@
         {% set index=i + current_page - 2 %}
         {% if i==0 %}
             {% if current_page - 3 == 1 %}
-                <li><a href="/index/question/{{ q_id }}?page=1">1</a></li>
+                <li><a href="/index/collection/{{ q_id }}?page=1">1</a></li>
             {% elif current_page -3 > 1  %}
-                <li><a href="/index/question/{{ q_id }}?page=1">1</a></li>
+                <li><a href="/index/collection/{{ q_id }}?page=1">1</a></li>
                 <li><span>...</span></li>
             {% endif %}
         {% endif %}
@@ -46,15 +46,15 @@
             <li class="uk-active"><span>{{ index }}</span></li>
         {% elif index>=current_page-3 and index<current_page + 3%}
             {% if index>0 and index<= page_count%}
-            <li><a href="/index/question/{{ q_id }}?page={{ index }}">{{ index }}</a></li>
+            <li><a href="/index/collection/{{ q_id }}?page={{ index }}">{{ index }}</a></li>
             {% endif %}
         {% endif %}
         {% if i==8 %}
             {% if current_page + 3 == page_count %}
-                <li><a href="/index/question/{{ q_id }}?page={{ page_count }}">{{ page_count }}</a></li>
+                <li><a href="/index/collection/{{ q_id }}?page={{ page_count }}">{{ page_count }}</a></li>
             {% elif current_page + 3 < page_count  %}
                 <li><span>...</span></li>
-                <li><a href="/index/question/{{ q_id }}?page={{ page_count }}">{{ page_count }}</a></li>
+                <li><a href="/index/collection/{{ q_id }}?page={{ page_count }}">{{ page_count }}</a></li>
             {% endif %}
         {% endif %}
     {% endfor %}
