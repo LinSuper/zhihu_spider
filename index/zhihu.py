@@ -1,7 +1,7 @@
 #coding:utf-8
 
 from . import index
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, abort
 from model.search_record import SearchRecord
 from model.zhihu_image import ZhihuImage
 
@@ -14,6 +14,14 @@ def get_top_i_search(start=0, end=5):
         return list(find_items)
     else:
         return []
+
+def get_top_i_ans(url, start=0, end=10):
+    find_ans = ZhihuImage.col.find_one({'url': url})
+    if find_ans:
+        count = len(find_ans[ZhihuImage.Field.imagesList])
+        return find_ans[ZhihuImage.Field.imagesList][start:end], count
+    else:
+        return [], 0
 
 @index.route('/zhihu', methods=['GET'])
 def show_zhihu():
@@ -79,4 +87,15 @@ def get_more():
 
 @index.route('/question/<q_id>', methods=['GET'])
 def question_page(q_id):
-    pass
+    page = request.args.get('page', 1, type=int)
+    find_question = SearchRecord.col.find_one(q_id)
+    if find_question:
+        title = find_question['title']
+        url = find_question['url']
+        find_ans, count = get_top_i_ans(url, (page-1)*5, 5*page)
+        return render_template(
+            'question.html', index=2, title=title, url=url, data=find_ans,
+            current_page=page, page_count=int(count/5), q_id=q_id
+        )
+    else:
+        abort(404)

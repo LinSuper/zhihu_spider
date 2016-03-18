@@ -57,7 +57,7 @@
 {% endblock %}
 {% block script %}
     <script>
-
+    question_status = 0;
     function update_item(){
         var all_li = $('.uk-subnav-pill')[0].children;
         for(var i =0;i<all_li.length;i++){
@@ -65,31 +65,35 @@
             if(current_li.attributes['class'].value=="uk-active"){
                 if(i==0){
                     var current_num = $('#question')[i].children.length/2;
-                    UIkit.notify("加载中...",{timeout:2000});
-                    $.ajax({
-                      url:'/index/api/get_more?type=' + i + '&start=' + current_num + '&end=' +  (current_num+5),
-                      type: "GET",
-                      success: function(data){
-                            for(var j=0;j<data.data.length;j++){
-                                var c_data = data.data[j];
-                                var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
-                                var title_div = $('<div class="uk-width-medium-1-1"></div>').append(
-                                        $('<p class="uk-text-large"></p>').append($('<a></a>').attr('href',c_data.url).text(c_data.title))
-                                );
-                                var image_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
-                                for(var z=0;z<c_data.image.length;z++){
-                                    var next_div = $('<div class="uk-width-medium-1-5"></div>').append($('<img src="'+c_data.image[z]+'">').attr('width',250).attr('height',100));
-                                    image_div.append(next_div);
+                    if(question_status==0) {
+                        UIkit.notify("加载中...", {timeout: 2000});
+                        question_status =1;
+                        $.ajax({
+                            url: '/index/api/get_more?type=' + i + '&start=' + current_num + '&end=' + (current_num + 5),
+                            type: "GET",
+                            success: function (data) {
+                                for (var j = 0; j < data.data.length; j++) {
+                                    var c_data = data.data[j];
+                                    var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    var title_div = $('<div class="uk-width-medium-1-1"></div>').append(
+                                            $('<p class="uk-text-large"></p>').append($('<a></a>').attr('href', c_data.url).text(c_data.title))
+                                    );
+                                    var image_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    for (var z = 0; z < c_data.image.length; z++) {
+                                        var next_div = $('<div class="uk-width-medium-1-5"></div>').append($('<img src="' + c_data.image[z] + '">').attr('width', 250).attr('height', 100));
+                                        image_div.append(next_div);
+                                    }
+                                    $('#question').append(title_div);
+                                    $('#question').append(image_div);
                                 }
-                                $('#question').append(title_div);
-                                $('#question').append(image_div);
+                                question_status = 0;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                question_status = 0;
+                                alert('服务器忙，请重试！' + errorThrown);
                             }
-                          },
-                      error: function(XMLHttpRequest, textStatus, errorThrown)
-                      {
-                          alert('服务器忙，请重试！' + errorThrown);
-                      }
-                  });
+                        });
+                    }
                 }
             }
         }
