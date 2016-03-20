@@ -13,11 +13,13 @@ from bson import ObjectId
 def get_top_i_search(start=0, end=5, zhihu_type=1):
     find_items = SearchRecord.col.find({'zhihu_type': zhihu_type}).sort(
         SearchRecord.Field.searchCount, -1
-    ).skip(start).limit(end - start)
+    )
+    count = find_items.count()
+    find_items = find_items.skip(start).limit(end - start)
     if find_items:
-        return list(find_items)
+        return list(find_items), count
     else:
-        return []
+        return [], 0
 
 def get_top_i_ans(url, start=0, end=10):
     find_ans = ZhihuImage.col.find_one({'url': url})
@@ -57,7 +59,7 @@ def insert_search_item():
 @index.route('/zhihu', methods=['GET'])
 def show_zhihu():
     question_data = []
-    top_i_search = get_top_i_search(zhihu_type=1)
+    top_i_search, question_count = get_top_i_search(zhihu_type=1)
     url_list  = [i['url'] for i in top_i_search]
     zhihu_image_list = list(ZhihuImage.col.find({
         'url': {'$in': url_list}
@@ -81,7 +83,7 @@ def show_zhihu():
             temp['image'] = image_list
             question_data.append(temp)
     collection_data = []
-    top_i_search = get_top_i_search(zhihu_type=0)
+    top_i_search, collection_count = get_top_i_search(zhihu_type=0)
     url_list  = [i['url'] for i in top_i_search]
     zhihu_image_list = list(ZhihuImage.col.find({
         'url': {'$in': url_list}
@@ -104,7 +106,10 @@ def show_zhihu():
             image_list = ['http://ali.superlin.cc:9999/img/zhihu?url='+i for i in get_image[:5]]
             temp['image'] = image_list
             collection_data.append(temp)
-    return render_template('zhihu.html', index=2, question_data=question_data, collection_data=collection_data)
+    return render_template(
+        'zhihu.html', index=2, question_data=question_data, collection_data=collection_data,
+        question_count=question_count, collection_count=collection_count
+    )
 
 
 @index.route('/api/get_more', methods=['GET'])
@@ -113,7 +118,7 @@ def get_more():
     start  = request.args.get('start', 0, type=int)
     end = request.args.get('end', 5+start, type=int)
     question_data = []
-    top_i_search = get_top_i_search(start, end, q_type)
+    top_i_search, count = get_top_i_search(start, end, q_type)
     url_list  = [i['url'] for i in top_i_search]
     zhihu_image_list = list(ZhihuImage.col.find({
         'url': {'$in': url_list}

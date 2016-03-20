@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block script_file %}
      <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
 {% endblock %}
 {% block mid_content %}
     <div class="uk-width-medium-1-1" xmlns="http://www.w3.org/1999/html">
@@ -21,6 +22,10 @@
             <li class="uk-active" aria-hidden="false">
                 <div class="uk-width-medium-1-1">
                 <div class="uk-container uk-container-center" id="question">
+                <div class="uk-alert" data-uk-alert>
+                    <a href="" class="uk-alert-close uk-close"></a>
+                    <p>点击标题可以查看全部图片哟</p>
+                </div>
                     {% for i in question_data %}
                         {% set index_1 = loop.index %}
                         <div class="uk-grid" data-uk-grid-margin>
@@ -37,7 +42,11 @@
                         {% endfor %}
                         </div>
                     {% endfor %}
+
                 </div>
+                <ul class="uk-pagination" id="pagination_1" data-uk-pagination="{items:{{ question_count }}, itemsOnPage:5}">
+
+                </ul>
                 </div>
 {#                <ul class="uk-pagination" id="page_0"></ul>#}
             </li>
@@ -62,7 +71,11 @@
                         {% endfor %}
                         </div>
                     {% endfor %}
+
                 </div>
+                <ul class="uk-pagination" id="pagination_2" data-uk-pagination="{items:{{ collection_count }}, itemsOnPage:5}">
+
+                </ul>
                 </div>
             </li>
 
@@ -77,24 +90,18 @@
 {% endblock %}
 {% block script %}
     <script>
-    question_status = 0;
-    collection_status = 0;
-    function update_item(){
+    function update_item(index){
         var all_li = $('.uk-subnav-pill')[0].children;
         for(var i =0;i<all_li.length;i++){
             var current_li = all_li[i];
             if(current_li.attributes['class'].value=="uk-active"){
                 if(i==0){
-                    var current_num = $('#question')[0].children.length/2;
-                    if(question_status==0) {
-                        question_status =1;
+                    UIkit.notify("加载中...", {timeout: 2000});
                         $.ajax({
-                            url: '/index/api/get_more?type=1&start=' + current_num + '&end=' + (current_num + 5),
+                            url: '/index/api/get_more?type=1&start=' + (index-1)*5 + '&end=' + (index*5),
                             type: "GET",
                             success: function (data) {
-                                if(data.data.length>0){
-                                    UIkit.notify("加载中...", {timeout: 2000});
-                                }
+                                $('#question').empty();
                                 for (var j = 0; j < data.data.length; j++) {
                                     var c_data = data.data[j];
                                     var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
@@ -116,19 +123,15 @@
                                 alert('服务器忙，请重试！' + errorThrown);
                             }
                         });
-                    }
                 }
                 if(i==1){
-                    var current_num = $('#collection')[0].children.length/2;
-                    if(collection_status==0) {
-                        collection_status =1;
+                    UIkit.notify("加载中...", {timeout: 2000});
+
                         $.ajax({
-                            url: '/index/api/get_more?type=0&start=' + current_num + '&end=' + (current_num + 5),
+                            url: '/index/api/get_more?type=0&start=' + (index-1)*5 + '&end=' + (index*5),
                             type: "GET",
                             success: function (data) {
-                                if(data.data.length>0){
-                                    UIkit.notify("加载中...", {timeout: 2000});
-                                }
+                                $('#collection').empty();
                                 for (var j = 0; j < data.data.length; j++) {
                                     var c_data = data.data[j];
                                     var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
@@ -143,27 +146,21 @@
                                     $('#collection').append(title_div);
                                     $('#collection').append(image_div);
                                 }
-                                collection_status = 0;
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                question_status = 0;
                                 alert('服务器忙，请重试！' + errorThrown);
                             }
                         });
-                    }
                 }
             }
         }
 
     }
-$(window).scroll( function() {
-    var a = $(document).scrollTop();
-    var b = $(window).height();
-    var c = $(document).height();
-    if(c<=a+b){
-        update_item();
-    }
-});
+
+
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+        update_item(pageIndex+1);
+    });
     function insert_url(){
         var url = $('#insert_url').val();
         if(url.length==0){
