@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block script_file %}
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+    <script type="text/javascript" src="http://files-10015041.file.myqcloud.com/static/src/cos-js-sdk/qcloud_sdk.js"></script>
+	<script type="text/javascript" src="http://files-10015041.file.myqcloud.com/static/src/cos-js-sdk/swfobject.js"></script>
+{% endblock %}
+{% block mid_content %}
+<div class="uk-width-medium-1-1">
+      <p class="uk-text-large">分享出你手里的图吧0.0 <a href="#my-modal" class="uk-button uk-button-primary" data-uk-modal>上传图片</a></p>
+
+    <div class="uk-modal" id="my-modal">
+    <div class="uk-modal-dialog">
+        <div class="uk-modal-header">上传图片</div>
+        <div class="uk-margin-small-top uk-modal-content uk-form">
+            <p>标题</p>
+            <p><input type="text" class="uk-width-1-1" id="title"></p>
+            <p id="image"></p>
+            <button type="button" class="uk-button uk-button-primary" onclick="upload_img()">选择本地图片</button>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button type="button" class="uk-button uk-modal-close">取消</button>
+            <button type="button" class="uk-button uk-button-primary" onclick="upload_api()">发表</button>
+        </div>
+    </div>
+    </div>
+      <div class="uk-gird" data-uk-grid-margin>
+          <input  id="file" type="file" accept="image/gif,image/jpeg,image/png,image/jpg" style="display:none;"/>
+          <div id="all_article_box">
+
+              {% for i in data %}
+                  <article class="uk-article">
+                <h3 class="uk-article-title">{{ i.title }}</h3>
+                <p class="uk-article-meta">
+                    {{ i.create_time }}
+                </p>
+                    <img src="{{ i.content }}" class="uk-thumbnail-large">
+                </article>
+              {% endfor %}
+            </div>
+      </div>
+    {% if page_count > 1 %}
+    <ul class="uk-pagination">
+    {% if page_count<=10 %}
+    {% for i in range(page_count) %}
+        {% if loop.index == current_page %}
+            <li class="uk-active"><span>{{ loop.index }}</span></li>
+        {% else %}
+            <li><a href="/index/zone?page={{ loop.index }}">{{ loop.index }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+    {% for i in range(9) %}
+        {% set index=i + current_page - 2 %}
+        {% if i==0 %}
+            {% if current_page - 3 == 1 %}
+                <li><a href="/index/zone?page=1">1</a></li>
+            {% elif current_page -3 > 1  %}
+                <li><a href="/index/zone?page=1">1</a></li>
+                <li><span>...</span></li>
+            {% endif %}
+        {% endif %}
+        {% if current_page == index %}
+            <li class="uk-active"><span>{{ index }}</span></li>
+        {% elif index>=current_page-3 and index<current_page + 3%}
+            {% if index>0 and index<= page_count%}
+            <li><a href="/index/zone?page={{ index }}">{{ index }}</a></li>
+            {% endif %}
+        {% endif %}
+        {% if i==8 %}
+            {% if current_page + 3 == page_count %}
+                <li><a href="/index/zone?page={{ page_count }}">{{ page_count }}</a></li>
+            {% elif current_page + 3 < page_count  %}
+                <li><span>...</span></li>
+                <li><a href="/index/zone?page={{ page_count }}">{{ page_count }}</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+    <script>
+    var bucketName = "image/kantujun";
+    var cos = new CosCloud("10015041", '/img/sign');
+    var modal = UIkit.modal("#my-modal");
+    function upload_img(){
+        $('#file').click();
+    }
+    $(document).on('change', '#file', function(e){
+              var successCallBack = function(result){
+          			var file_url = $.parseJSON(result).data.access_url;
+                    $('#image').empty();
+                    $('#image').append($('<img>').attr('src',file_url));
+          		};
+
+          		var errorCallBack = function(result){
+          			alert(result);
+          		};
+              var files = document.getElementById("file").files;
+              var file_type  = files[0].name.split('.')[1];
+             if(files && files.length == 1){
+                cos.uploadFile(successCallBack, errorCallBack, bucketName, file_type, files[0]);
+             }
+             else{
+                alert("请选择一个文件");
+             }
+            });
+    function upload_api(){
+        if($('#image')[0].children.length==0){
+            alert('请选择一张图片');
+            return
+        }
+        var title = $('#title').val();
+        if(title<=0||title>=15){
+            alert("标题长度不对，应大于0小于15个字符");
+            return
+        }
+        var image_url = $('#image')[0].children[0].src;
+        $.ajax({
+            url: '/index/zone/upload_api',
+            type: 'POST',
+            data: {'title': title, 'content': image_url},
+            success: function (data){
+                UIkit.notify(data.message, {timeout: 2000});
+                if(data.stat==1){
+                    var title = $('#title').val('');
+                    $('#image').empty();
+                    modal.hide();
+                    window.location.href='/index/zone';
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('服务器忙，请重试！' + errorThrown);
+            }
+        })
+    }
+    </script>
+{% endblock %}
