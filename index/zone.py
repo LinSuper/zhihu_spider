@@ -14,7 +14,6 @@ def zone_page():
     find_items = ZoneSubject.col.find().sort(ZoneSubject.Field.create_time, -1)
     count = find_items.count()
     find_items = list(find_items.skip((page-1)*5).limit(5))
-    print count, page
     for i in find_items:
         i['create_time'] = datetime2string(utc2local(i['create_time']))
     return render_template('zone.html', index=3, data=find_items, page_count=count/5, current_page=page)
@@ -23,10 +22,10 @@ def zone_page():
 @index.route('/zone/upload_api', methods=['POST'])
 def upload_api():
     last_time = session.get('time', None)
-    time_limit = datetime2timestamp(datetime.utcnow())-last_time
-    print time_limit
-    if time_limit/1000 < 60:
-        return jsonify(stat=0, message='上传太过频繁！')
+    if last_time:
+        time_limit = datetime2timestamp(datetime.utcnow())-last_time
+        if time_limit/1000 < 60:
+            return jsonify(stat=0, message='上传太过频繁！')
     title = request.form.get('title', None)
     content = request.form.get('content', None)
     if title and content:

@@ -2,6 +2,7 @@
 {% block script_file %}
      <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
     <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
+    <script src="http://f.919cp.com/cpf.php?445__1" charset="utf-8"></script>
 {% endblock %}
 {% block mid_content %}
     <div class="uk-width-medium-1-1" xmlns="http://www.w3.org/1999/html">
@@ -9,7 +10,7 @@
     <input type="text" placeholder="输入知乎问题或者收藏夹的完整链接" class="uk-form-width-large" id="insert_url">
     <a onclick="insert_url();return;" class="uk-button">提交</a>
     </div>
-      <p class="uk-text-large">知乎看图</p>
+      <p class="uk-text-large">知乎看图 <a href="/index/zone">新版块：捡图</a></p>
       <div class="uk-gird" data-uk-grid-margin>
         <ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#switcher-content'}">
             <li class="uk-active" aria-expanded="true"><a href="#">问题</a></li>
@@ -179,6 +180,13 @@
 
         });
     }
+        var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cfe232834849b14c6eff873a46298a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
 
     </script>
 {% endblock %}
