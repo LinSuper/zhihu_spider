@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block mid_content %}
+    <div class="uk-width-medium-1-1">
+      <p class="uk-text-large">关键词搜索</p>
+      <div class="uk-gird" data-uk-grid-margin>
+          <div id="all_article_box">
+                <article class="uk-article">
+                    <div class="uk-form">
+                    <input type="text" placeholder="输入问题或者收藏夹的关键字" class="uk-form-width-large" id="keyword">
+                    <a onclick="keyword_search();return;" class="uk-button">搜索</a>
+                    </div>
+                </article>
+              <article class="uk-article" id="result">
+
+            </article>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+    function keyword_search(){
+        var keyword = $('#keyword').val();
+        if(keyword.length==0){
+            alert('关键词不能为空！');
+        }
+        $.ajax({
+            url: '/index/search',
+            type: 'POST',
+            data: {'keyword': keyword},
+            success: function(data){
+                $('#result').empty();
+                for(var i=0;i<data.data.length;i++){
+                    var per_data = data.data[i];
+                    $('#result').append(
+                            $('<p></p>').append($('<a></a>').attr('href', per_data.url).text(per_data.title))
+                    );
+                }
+            },
+            error: function(){
+
+            }
+        });
+    }
+    </script>
+{% endblock %}

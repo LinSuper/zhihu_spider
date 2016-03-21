@@ -6,6 +6,7 @@ from datetime import datetime
 from model.zone import ZoneSubject
 from bson import ObjectId
 from lib.timehelper import utc2local, datetime2string, datetime2timestamp, timestamp2datetime
+from model.search_record import SearchRecord
 
 
 @index.route('/zone', methods=['GET'])
@@ -41,3 +42,31 @@ def upload_api():
         })
         session['time'] = datetime2timestamp(datetime.utcnow())
         return jsonify(stat=1, message='上传成功！')
+
+@index.route('/search', methods=['GET', 'POST'])
+def search_page():
+    if request.method == 'GET':
+        return render_template('search.html', index=2)
+    else:
+        keyword = request.form.get('keyword', None)
+        keyword = keyword.strip()
+        print keyword
+        if keyword and len(keyword)>0:
+            find_item = SearchRecord.col.find({'title':{'$regex':keyword}})
+            if find_item:
+                data = []
+                for i in find_item:
+                    if 'zhihu_type' in i:
+                        f_id = i['_id']
+                        temp = {}
+                        temp['url'] = '/index/question/%s'%f_id if \
+                            i['zhihu_type']==1 else '/index/collection/%s'%f_id
+                        temp['title'] = i['title']
+                        data.append(temp)
+
+                return jsonify(stat=1, data=data)
+            else:
+                return jsonify(stat=1, data=[])
+        else:
+            return jsonify(stat=0, data=[])
+
