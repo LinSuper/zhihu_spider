@@ -11,13 +11,13 @@ app.secret_key = 'dsafdggfivfngnkrhsgsas'
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(img, url_prefix='/img')
 app.register_blueprint(index, url_prefix='/index')
+from index.zhihu import show_zhihu
 
 
 @app.route('/')
 #@login_required
-def hello_world():
-    # return render_template('zhihu_image.html')
-    return redirect('/index/zhihu')
+def show_home():
+    return show_zhihu()
 
 from werkzeug.serving import run_with_reloader
 @run_with_reloader
