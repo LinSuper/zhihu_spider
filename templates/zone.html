@@ -13,7 +13,7 @@
         <div class="uk-modal-header">上传图片</div>
         <div class="uk-margin-small-top uk-modal-content uk-form">
             <p>标题</p>
-            <p><input type="text" class="uk-width-1-1" id="title"></p>
+            <p><input type="text" class="uk-width-1-1" id="title" placeholder="标题可为空"></p>
             <p id="image"></p>
             <button type="button" class="uk-button uk-button-primary" onclick="upload_img()">选择本地图片</button>
         </div>
@@ -113,8 +113,8 @@
             return
         }
         var title = $('#title').val();
-        if(title<=0||title>=15){
-            alert("标题长度不对，应大于0小于15个字符");
+        if(title>=15){
+            alert("标题长度不对，应小于15个字符（可为空）");
             return
         }
         var image_url = $('#image')[0].children[0].src;

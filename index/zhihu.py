@@ -157,7 +157,7 @@ def question_page(q_id):
         find_ans, count = get_top_i_ans(url, (page-1)*5, 5*page)
         return render_template(
             'question.html', index=2, title=title, url=url, data=find_ans,
-            current_page=page, page_count=int(count/5), q_id=q_id
+            current_page=page, page_count=int((count+4)/5), q_id=q_id
         )
     else:
         abort(404)
@@ -173,7 +173,7 @@ def collection_page(q_id):
         find_ans, count = get_top_i_ans(url, (page-1)*5, 5*page)
         return render_template(
             'collection.html', index=2, title=title, url=url, data=find_ans,
-            current_page=page, page_count=int(count/5), q_id=q_id
+            current_page=page, page_count=int((count+4)/5), q_id=q_id
         )
     else:
         abort(404)
