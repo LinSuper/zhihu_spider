@@ -11,7 +11,7 @@
                      <i class="uk-align-right"><a href="{{ i.url }}" class="uk-link-reset">跳到豆瓣</a></i>
                  </h3>
                     <a href="#">
-                <img src="http:ali.superlin.cc:9999/img/douban?url={{ i.image_url }}" alt="">
+                <img src="http://ali.superlin.cc:9999/img/douban?url={{ i.image_url }}" alt="">
                     </a>
             </div>
 
@@ -20,4 +20,44 @@
 
     </div>
     </div>
+    {% if page_count > 1 %}
+    <ul class="uk-pagination uk-align-center">
+    {% if page_count<=10 %}
+    {% for i in range(page_count) %}
+        {% if loop.index == current_page %}
+            <li class="uk-active"><span>{{ loop.index }}</span></li>
+        {% else %}
+            <li><a href="/index/douban?page={{ loop.index }}">{{ loop.index }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+    {% for i in range(9) %}
+        {% set index=i + current_page - 2 %}
+        {% if i==0 %}
+            {% if current_page - 3 == 1 %}
+                <li><a href="/index/douban?page=1">1</a></li>
+            {% elif current_page -3 > 1  %}
+                <li><a href="/index/douban?page=1">1</a></li>
+                <li><span>...</span></li>
+            {% endif %}
+        {% endif %}
+        {% if current_page == index %}
+            <li class="uk-active"><span>{{ index }}</span></li>
+        {% elif index>=current_page-3 and index<current_page + 3%}
+            {% if index>0 and index<= page_count%}
+            <li><a href="/index/douban?page={{ index }}">{{ index }}</a></li>
+            {% endif %}
+        {% endif %}
+        {% if i==8 %}
+            {% if current_page + 3 == page_count %}
+                <li><a href="/index/douban?page={{ page_count }}">{{ page_count }}</a></li>
+            {% elif current_page + 3 < page_count  %}
+                <li><span>...</span></li>
+                <li><a href="/index/douban?page={{ page_count }}">{{ page_count }}</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    </ul>
+    {% endif %}
 {% endblock %}
