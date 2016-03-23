@@ -31,6 +31,12 @@
                     {% else %}
                     <li><a href="/index">首页</a></li>
                     {% endif %}
+                    {% if index == 5 %}
+                    <li class="uk-active"><a href="/index/douban">豆瓣妹子</a></li>
+                    {% else %}
+                    <li><a href="/index/douban">豆瓣妹子</a></li>
+                    {% endif %}
+
                     {% if index == 2 %}
                     <li class="uk-active"><a href="/index/zhihu">知乎看图</a></li>
                     {% else %}
@@ -76,6 +82,15 @@
                       <a href="/index">首页</a>
                   </li>
                   {% endif %}
+                    {% if index == 5 %}
+                  <li class="uk-active">
+                      <a href="/index/douban">豆瓣妹子</a>
+                  </li>
+                    {% else %}
+                  <li>
+                      <a href="/index/douban">豆瓣妹子</a>
+                  </li>
+                    {% endif %}
                   {% if index == 2 %}
                   <li class="uk-active">
                       <a href="/index/zhihu">知乎看图</a>

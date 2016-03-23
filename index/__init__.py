@@ -9,3 +9,4 @@ import zhihu
 import home
 import zone
 import tip
+import douban

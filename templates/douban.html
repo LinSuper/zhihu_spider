@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block mid_content %}
+    <div class="uk-container">
+    <div class="uk-grid" data-uk-grid-margin>
+        {% for i in data %}
+
+        <div class="uk-width-medium-1-4">
+            <div class="uk-panel uk-panel-box">
+                 <h3 class="uk-panel-title">
+                     <i class="uk-align-left"><a href="{{ i.author_url }}" class="uk-link-reset">{{ i.author_name }}</a></i>
+                     <i class="uk-align-right"><a href="{{ i.url }}" class="uk-link-reset">跳到豆瓣</a></i>
+                 </h3>
+                    <a href="#">
+                <img src="http:ali.superlin.cc:9999/img/douban?url={{ i.image_url }}" alt="">
+                    </a>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+    </div>
+{% endblock %}
