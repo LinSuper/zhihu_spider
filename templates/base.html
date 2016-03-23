@@ -6,7 +6,7 @@
   <meta name="keywords" content="知乎福利,豆瓣福利,妹子,爆照" />
   <meta name="description" content="知乎福利,豆瓣福利,妹子,爆照>
     {% if title %}
-    <title>{{ title }} -- 看图君</title>
+    <title>{{ title }} －看图君</title>
     {% else %}
   <title>看图君</title>
     {% endif %}
@@ -15,6 +15,14 @@
   <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
   <link id="data-uikit-theme" rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.docs.min.css">
   <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/my_uikit.css">
+    <script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
     {% block script_file %}
     {% endblock %}
 </head>

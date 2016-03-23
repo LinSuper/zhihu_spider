@@ -16,7 +16,7 @@ def init():
     for k, v in discussion_dict.iteritems():
         print v
         discussion = Discussion(v)
-        topics = discussion.get_all_topics(2)
+        topics = discussion.get_all_topics(98)
         for topic in topics:
             print topic.topic_url
             image_list = topic.get_image()

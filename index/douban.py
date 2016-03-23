@@ -22,5 +22,6 @@ def douban_page():
         temp['author_url'] = topic[DoubanTopic.Field.author_url]
         data.append(temp)
     return render_template(
-        'douban.html', index=5, data=data, current_page=page, page_count=int((count+19)/20)
+        'douban.html', index=5, data=data, current_page=page, page_count=int((count+19)/20),
+        title = u'豆瓣妹子  ｜'
     )
